@@ -1,6 +1,6 @@
 {
   "name": "gulp-jsonp",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "JSONP Wrapper for Gulp",
   "main": "index.js",
   "scripts": {
@@ -18,6 +18,8 @@
   "author": "Alexei White <alexei.white@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "atob": "^1.1.2",
+    "btoa": "^1.1.2",
     "colors": "^1.1.2",
     "ejs": "^2.3.3",
     "gulp-util": "^3.0.6",
