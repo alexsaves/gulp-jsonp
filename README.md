@@ -23,6 +23,6 @@ gulp.task('js', function () {
 ###Output
 The plugin will rename files to have a .js extension, and wrap the contents in an object like so:
 ```javascript
-__myJSONPCallbackFunction({"filenane":"index.html","contents":"[BASE64 ENCODED CONTENTS]"});
+__myJSONPCallbackFunction({"filename":"index.html","contents":"[BASE64 ENCODED CONTENTS]"});
 ```
 
