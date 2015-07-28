@@ -6,6 +6,11 @@ var istextorbinary = require('istextorbinary');
 var btoa = require('btoa'),
   Path = require('path');
 
+/**
+ * Extract path information
+ * @param path
+ * @returns {{dirname: *, basename: *, extname: *}}
+ */
 function parsePath(path) {
   var extname = Path.extname(path);
   return {
@@ -14,6 +19,31 @@ function parsePath(path) {
     extname: extname
   };
 }
+
+/**
+ * Find the last index of a regex within a string
+ * @param str
+ * @param regex
+ * @param startpos
+ * @returns {number}
+ */
+var regexLastIndexOf = function (str, regex, startpos) {
+  regex = (regex.global) ? regex : new RegExp(regex.source, "g" + (regex.ignoreCase ? "i" : "") + (regex.multiLine ? "m" : ""));
+  if (typeof (startpos) == "undefined") {
+    startpos = str.length;
+  } else if (startpos < 0) {
+    startpos = 0;
+  }
+  var stringToWorkWith = str.substring(0, startpos + 1);
+  var lastIndexOf = -1;
+  var nextStop = 0;
+  var result;
+  while ((result = regex.exec(stringToWorkWith)) != null) {
+    lastIndexOf = result.index;
+    regex.lastIndex = ++nextStop;
+  }
+  return lastIndexOf;
+};
 
 module.exports = function (config) {
   config.skipBinary = true;
@@ -29,20 +59,21 @@ module.exports = function (config) {
       }
 
       if (file.isBuffer()) {
+        var pchar = '/';
+        if (file.path.toString().indexOf('\\') > -1) {
+          pchar = '\\';
+        }
+
         var parsedPath = parsePath(file.relative),
           cnts = String(file.contents),
-          fname = file.path.substr(file.path.lastIndexOf('/') + 1);
-
+          fname = file.path.substr(file.path.lastIndexOf(pchar) + 1);
         var resobj = {
           filename: fname,
           contents: btoa(cnts)
         };
 
-        var path = file.path.substr(0, file.path.lastIndexOf('/') + 1) + Path.join(parsedPath.dirname, parsedPath.basename + parsedPath.extname.replace(/\./gi, '___') + '.js');
+        var path = file.path.substr(0, file.path.lastIndexOf(pchar) + 1) + Path.join(parsedPath.dirname, parsedPath.basename + parsedPath.extname.replace(/\./gi, '___') + '.js');
         file.path = path;
-        //console.log(file.path, path);
-        //console.log(parsedPath, path);
-
         file.contents = new Buffer(config.callback + '(' + JSON.stringify(resobj) + ');');
 
         return callback(null, file);
