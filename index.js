@@ -68,7 +68,7 @@ module.exports = function (config) {
           cnts = String(file.contents),
           fname = file.path.substr(file.path.lastIndexOf(pchar) + 1);
         var resobj = {
-          filename: fname,
+          filename: (config.key ? config.key : "" ) + fname,
           contents: btoa(cnts)
         };
 
