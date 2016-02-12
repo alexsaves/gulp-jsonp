@@ -1,6 +1,6 @@
 {
   "name": "gulp-jsonp",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "JSONP Wrapper for Gulp",
   "main": "index.js",
   "scripts": {
